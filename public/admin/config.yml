@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: Minge4273-creator/slat
+  repo: Minge4273-creator/slat/public/admin
   branch: main
 
 media_folder: "public/images" # 图片存放路径
