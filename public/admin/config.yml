@@ -1,14 +1,18 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Minge4273-creator/slat
   branch: main
-
-media_folder: "public/images" # 图片存放路径
+  # 关键：脱离 Netlify 后，必须配置一个轻量级的验证代理服务器
+  # 你可以使用社区免费提供的公共代理，或者自己用 Vercel/Heroku 部署一个
+  base_url: https://decap-cms-oauth-provider.netlify.app # 这是一个示例公共代理
+  
+media_folder: "public/images"
 public_folder: "/images"
 
 collections:
   - name: "products"
     label: "Slat Panels"
-    folder: "src/content/products" # 我们需要把产品数据放在这里
+    folder: "src/content/products" 
     create: true
     slug: "{{slug}}"
     fields:
