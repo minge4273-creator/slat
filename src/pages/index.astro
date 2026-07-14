@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// 这里定义你的产品
+const panels = [
+  { name: "Natural Oak Slat", material: "Real Wood Veneer", color: "Light Oak", img: "/images/oak.jpg" },
+  { name: "Smoked Walnut Slat", material: "Walnut Veneer", color: "Dark Brown", img: "/images/walnut.jpg" },
+  { name: "Classic Grey Slat", material: "MDF + PET Fiber", color: "Concrete Grey", img: "/images/grey.jpg" },
+  { name: "Midnight Black Slat", material: "Polyester Fiber", color: "Matte Black", img: "/images/black.jpg" }
+];
+---
+
+<Layout title="Home">
+  <section style="background: #fdfaf7; padding: 5rem 0; text-align: center;">
+    <div class="container">
+      <h1 style="font-size: 3rem; margin-bottom: 1rem;">Transform Your Space with <br/><span style="color: #d4a373;">Premium Slat Panels</span></h1>
+      <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto 2rem;">Aesthetic wall solutions with superior sound absorption. Available in multiple wood veneers and sustainable fibers.</p>
+      <a href="#products" class="btn">View All Finishes</a>
+    </div>
+  </section>
+
+  <section id="products" style="padding: 4rem 0;">
+    <div class="container">
+      <h2 style="text-align: center; margin-bottom: 3rem;">Our Collections</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+        {panels.map(p => (
+          <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; color: #999;">
+              {/* 这里放产品图路径：{p.img} */}
+              [Product Image: {p.color}]
+            </div>
+            <div style="padding: 1.5rem;">
+              <h3 style="margin-top: 0;">{p.name}</h3>
+              <p style="color: #666; font-size: 0.9rem;">Material: {p.material}<br/>Color: {p.color}</p>
+              <a href={`/inquiry?product=${p.name}`} class="btn" style="width: 100%; text-align: center; padding: 10px 0;">Request Quote</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

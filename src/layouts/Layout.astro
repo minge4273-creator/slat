@@ -1,0 +1,32 @@
+---
+const { title } = Astro.props;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title} | Premium Slat Acoustic Panels</title>
+    <style is:global>
+      body { font-family: 'Inter', sans-serif; margin: 0; color: #333; line-height: 1.6; }
+      nav { background: #1a1a1a; color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; }
+      nav a { color: white; text-decoration: none; margin-left: 20px; font-weight: 500; }
+      .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+      footer { background: #f4f4f4; padding: 3rem 0; text-align: center; margin-top: 4rem; border-top: 1px solid #ddd; }
+      .btn { background: #d4a373; color: white; padding: 12px 24px; border-radius: 4px; text-decoration: none; display: inline-block; transition: 0.3s; }
+      .btn:hover { background: #bc8a5f; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div style="font-size: 1.5rem; font-weight: bold;">VIGOR ACOUSTIC</div>
+      <div>
+        <a href="/">Home</a>
+        <a href="#products">Products</a>
+        <a href="/inquiry">Contact & Inquiry</a>
+      </div>
+    </nav>
+    <slot />
+    <footer>
+      <p>&copy; 2026 Vigor New Materials. Specialized in Slat Acoustic Panels.</p>
+    </body>
+  </html>
