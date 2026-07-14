@@ -1,10 +1,6 @@
 backend:
-  name: github
-  repo: Minge4273-creator/slat
+  name: git-gateway
   branch: main
-  # 关键：脱离 Netlify 后，必须配置一个轻量级的验证代理服务器
-  # 你可以使用社区免费提供的公共代理，或者自己用 Vercel/Heroku 部署一个
-  base_url: https://decap-cms-oauth-provider.netlify.app # 这是一个示例公共代理
   
 media_folder: "public/images"
 public_folder: "/images"
