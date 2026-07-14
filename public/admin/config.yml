@@ -1,0 +1,19 @@
+backend:
+  name: git-gateway
+  branch: main # 确保与你的 GitHub 分支名一致
+
+media_folder: "public/images" # 图片存放路径
+public_folder: "/images"
+
+collections:
+  - name: "products"
+    label: "Slat Panels"
+    folder: "src/content/products" # 我们需要把产品数据放在这里
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Product Name", name: "title", widget: "string"}
+      - {label: "Material", name: "material", widget: "string"}
+      - {label: "Color", name: "color", widget: "string"}
+      - {label: "Feature Image", name: "image", widget: "image"}
+      - {label: "Body", name: "body", widget: "markdown"}
