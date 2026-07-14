@@ -1,42 +1,82 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// 这里定义你的产品
 const panels = [
-  { name: "Natural Oak Slat", material: "Real Wood Veneer", color: "Light Oak", img: "/images/oak.jpg" },
-  { name: "Smoked Walnut Slat", material: "Walnut Veneer", color: "Dark Brown", img: "/images/walnut.jpg" },
-  { name: "Classic Grey Slat", material: "MDF + PET Fiber", color: "Concrete Grey", img: "/images/grey.jpg" },
-  { name: "Midnight Black Slat", material: "Polyester Fiber", color: "Matte Black", img: "/images/black.jpg" }
+  { name: "Natural Oak Slat", material: "Real Wood Veneer", color: "Light Oak" },
+  { name: "Smoked Walnut Slat", material: "Walnut Veneer", color: "Dark Brown" },
+  { name: "Classic Grey Slat", material: "MDF + PET Fiber", color: "Concrete Grey" }
 ];
 ---
 
 <Layout title="Home">
-  <section style="background: #fdfaf7; padding: 5rem 0; text-align: center;">
-    <div class="container">
-      <h1 style="font-size: 3rem; margin-bottom: 1rem;">Transform Your Space with <br/><span style="color: #d4a373;">Premium Slat Panels</span></h1>
-      <p style="font-size: 1.2rem; color: #666; max-width: 700px; margin: 0 auto 2rem;">Aesthetic wall solutions with superior sound absorption. Available in multiple wood veneers and sustainable fibers.</p>
-      <a href="#products" class="btn">View All Finishes</a>
+  <!-- 1. 轮播图模块 (CSS 纯代码实现) -->
+  <section class="slider-container">
+    <div class="slider">
+      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/banner1.jpg');">
+        <div class="slide-content">
+          <h1>Modern Acoustic Solutions</h1>
+          <p>Elevate your interior design with our Slat Panels.</p>
+        </div>
+      </div>
+      <!-- 你可以按同样格式增加更多 slide -->
     </div>
   </section>
 
+  <!-- 2. 产品展示网格 -->
   <section id="products" style="padding: 4rem 0;">
     <div class="container">
       <h2 style="text-align: center; margin-bottom: 3rem;">Our Collections</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+      <div class="product-grid">
         {panels.map(p => (
-          <div style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-            <div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center; color: #999;">
-              {/* 这里放产品图路径：{p.img} */}
-              [Product Image: {p.color}]
-            </div>
+          <div class="product-card">
+            <div class="img-placeholder">[Product: {p.name}]</div>
             <div style="padding: 1.5rem;">
-              <h3 style="margin-top: 0;">{p.name}</h3>
-              <p style="color: #666; font-size: 0.9rem;">Material: {p.material}<br/>Color: {p.color}</p>
-              <a href={`/inquiry?product=${p.name}`} class="btn" style="width: 100%; text-align: center; padding: 10px 0;">Request Quote</a>
+              <h3>{p.name}</h3>
+              <p>Color: {p.color}</p>
+              <a href={`/inquiry?product=${p.name}`} class="btn-sm">Request Quote</a>
             </div>
           </div>
         ))}
       </div>
     </div>
   </section>
+
+  <!-- 3. 公司信息板块 (带跳转链接) -->
+  <section style="background: #1a1a1a; color: white; padding: 5rem 0;">
+    <div class="container">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+        <div>
+          <h2 style="color: #d4a373;">Suzhou Vigor New Materials</h2>
+          <p style="color: #ccc; line-height: 1.8;">
+            No.5, Changsheng Road, Zhitang Town, Changshu City, China.<br/>
+            We are dedicated to providing high-quality acoustic solutions for global projects.
+          </p>
+        </div>
+        <div class="contact-links">
+          <h3>Quick Contact</h3>
+          <ul>
+            <li>📧 Email: <a href="mailto:info@csvigor.com">info@csvigor.com</a></li>
+            <li>📞 Tel: <a href="tel:0512-52828160">0512-52828160</a></li>
+            <li>📱 Mobile: <a href="tel:+8613812831131">+8613812831131</a></li>
+            <li>🌐 Website: <a href="https://www.csvigor.com" target="_blank">www.csvigor.com</a></li>
+            <li>🏢 Alibaba: <a href="https://szfet.m.en.alibaba.com/?spm=a2700.details.0.0.290514a9OiEON9&wx_navbar_transparent=true&wx_screen_direc=portrait&productId=1601873678937&from=detail_company_card" target="_blank" style="color: #ff6600;">Visit Our Store</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .slider-container { width: 100%; height: 500px; overflow: hidden; position: relative; background: #333; }
+    .slide { width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
+    .slide-content h1 { font-size: 3.5rem; margin-bottom: 10px; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+    .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+    .img-placeholder { height: 250px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #999; }
+    .contact-links ul { list-style: none; padding: 0; }
+    .contact-links li { margin-bottom: 15px; font-size: 1.1rem; }
+    .contact-links a { color: #fff; text-decoration: none; border-bottom: 1px solid transparent; transition: 0.3s; }
+    .contact-links a:hover { color: #d4a373; border-bottom-color: #d4a373; }
+    .btn-sm { background: #d4a373; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: block; text-align: center; }
+  </style>
 </Layout>
