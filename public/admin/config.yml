@@ -1,6 +1,7 @@
 backend:
-  name: git-gateway
-  branch: main # 确保与你的 GitHub 分支名一致
+  name: github
+  repo: Minge4273/slat
+  branch: main
 
 media_folder: "public/images" # 图片存放路径
 public_folder: "/images"
