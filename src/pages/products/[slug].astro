@@ -1,8 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-// 告诉 Astro 获取哪些产品数据来生成页面
-// 替换后的新代码
 export async function getStaticPaths() {
   try {
     const products = await Astro.glob('../../content/products/*.md');
@@ -13,7 +11,6 @@ export async function getStaticPaths() {
       props: { product },
     }));
   } catch (error) {
-    // 如果找不到任何产品文件，就返回一个空数组，防止网站构建崩溃
     console.warn('No product files found for dynamic routes. Skipping generation.');
     return []; 
   }
@@ -26,57 +23,118 @@ const { frontmatter, compiledContent } = product;
 <Layout title={frontmatter.title}>
   <div class="product-detail-container">
     
-    <!-- 上半部分：阿里国际站风格的主图与核心信息 -->
+    <!-- 调整 1：将产品标题放在最上方 -->
+    <h1 class="product-main-title">{frontmatter.title}</h1>
+
+    <!-- 上半部分：分为左右两列 -->
     <div class="product-top-section">
       
-      <!-- 左侧：5张图片展示区 -->
+      <!-- 左侧：图片画廊（大图 + 5张可点击的小图） -->
       <div class="product-gallery">
-        <!-- 大图显示首图 -->
-        <img src={frontmatter.image} alt={frontmatter.title} class="main-image" />
+        <!-- 主展示大图，增加 id 以便 JS 控制 -->
+        <img src={frontmatter.image} alt={frontmatter.title} id="main-product-image" class="main-image" />
         
-       <!-- 下方缩略图列表 (1张首图 + 4张图集) -->
+        <!-- 下方缩略图列表 -->
         <div class="thumbnail-list">
-          <!-- 渲染第 1 张图（首图） -->
-          <img src={frontmatter.image} class="thumb" />
+          <!-- 默认第 1 张为选中状态 (active-thumb) -->
+          <img src={frontmatter.image} class="thumb active-thumb" />
           
-          <!-- 渲染剩下的 4 张图，加入格式判断解决图片发白/裂开问题 -->
+          <!-- 剩下的图集 -->
           {frontmatter.gallery && frontmatter.gallery.map((item) => (
             <img src={typeof item === 'string' ? item : item?.image} class="thumb" />
           ))}
         </div>
+      </div>
 
-      <!-- 右侧：产品核心属性与询盘入口 -->
+      <!-- 右侧：产品属性与询盘按钮 -->
       <div class="product-info">
-        <h1>{frontmatter.title}</h1>
         <div class="attributes">
           <p><strong>Material:</strong> {frontmatter.material}</p>
           <p><strong>Color:</strong> {frontmatter.color}</p>
         </div>
-        <!-- 引导客户前往询盘页 -->
-        <a href="/inquiry" class="inquiry-btn">Send Inquiry</a>
+        <!-- 自动带入产品名称的询盘按钮 -->
+        <a href={`/inquiry?product=${encodeURIComponent(frontmatter.title)}`} class="inquiry-btn">Send Inquiry</a>
       </div>
     </div>
 
-    <!-- 下半部分：产品长图/详细图文描述 -->
+    <!-- 调整 2：下半部分详情页面，整体居中 -->
     <div class="product-body-section">
-      <h2>Product Details</h2>
+      <h2 class="section-title">Product Details</h2>
       <div class="markdown-content" set:html={compiledContent()} />
     </div>
     
   </div>
 </Layout>
 
+<!-- 调整 3：加入客户端 JavaScript，实现点击小图换大图的交互逻辑 -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // 获取大图元素和所有小图元素
+    const mainImage = document.getElementById('main-product-image');
+    const thumbs = document.querySelectorAll('.thumb');
+
+    if (mainImage && thumbs.length > 0) {
+      thumbs.forEach(thumb => {
+        // 给每一个小图添加点击事件
+        thumb.addEventListener('click', function() {
+          // 1. 将大图的 src 替换为当前被点击小图的 src
+          mainImage.src = this.src;
+
+          // 2. 移除所有小图的 "选中" 边框样式
+          thumbs.forEach(t => t.classList.remove('active-thumb'));
+          
+          // 3. 给当前被点击的小图加上 "选中" 边框样式
+          this.classList.add('active-thumb');
+        });
+      });
+    }
+  });
+</script>
+
 <style>
-  /* 基础布局样式，你可以根据需要进一步美化 */
-  .product-detail-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-  .product-top-section { display: flex; gap: 40px; margin-bottom: 50px; }
-  .product-gallery { flex: 1; max-width: 500px; }
-  .main-image { width: 100%; height: auto; border: 1px solid #eee; margin-bottom: 10px; }
-  .thumbnail-list { display: flex; gap: 10px; }
-  .thumb { width: 80px; height: 80px; object-fit: cover; border: 1px solid #ccc; cursor: pointer; }
-  .product-info { flex: 1; }
-  .product-info h1 { font-size: 28px; margin-bottom: 20px; }
-  .attributes p { margin: 10px 0; font-size: 16px; }
-  .inquiry-btn { display: inline-block; margin-top: 30px; padding: 15px 30px; background-color: #ff6a00; color: white; text-decoration: none; font-weight: bold; border-radius: 4px; }
-  .product-body-section { border-top: 2px solid #eee; padding-top: 30px; }
+  /* 基础容器 */
+  .product-detail-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+  /* 标题样式 */
+  .product-main-title { font-size: 32px; margin-bottom: 30px; color: #222; line-height: 1.4; }
+
+  /* 左右分栏布局 */
+  .product-top-section { display: flex; gap: 50px; margin-bottom: 60px; align-items: flex-start; }
+
+  /* --- 左侧画廊样式 --- */
+  .product-gallery { flex: 1; max-width: 550px; }
+  /* 大图锁定 1:1 比例 */
+  .main-image { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border: 1px solid #e5e5e5; margin-bottom: 15px; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: opacity 0.3s; }
+  /* 缩略图列表 */
+  .thumbnail-list { display: flex; gap: 10px; flex-wrap: wrap; }
+  .thumb { width: 80px; height: 80px; object-fit: cover; border: 2px solid transparent; cursor: pointer; transition: all 0.2s ease; border-radius: 2px; }
+  .thumb:hover { opacity: 0.8; }
+  /* 被点击选中的小图显示高亮边框 */
+  .thumb.active-thumb { border-color: #ff6a00; }
+
+  /* --- 右侧信息样式 --- */
+  .product-info { flex: 1; padding-top: 10px; }
+  .attributes p { margin: 15px 0; font-size: 16px; color: #555; line-height: 1.6; }
+  .attributes strong { color: #333; display: inline-block; width: 80px; }
+  
+  /* 询盘按钮样式 (类似阿里国际站风格) */
+  .inquiry-btn { display: inline-block; margin-top: 40px; padding: 14px 45px; background-color: #ff6a00; color: white; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 4px; transition: background 0.3s ease; box-shadow: 0 4px 12px rgba(255, 106, 0, 0.3); }
+  .inquiry-btn:hover { background-color: #e65c00; }
+
+  /* --- 下半部分详情区域样式 --- */
+  .product-body-section { border-top: 1px solid #e5e5e5; padding-top: 50px; text-align: center; } /* text-align: center 让内部内容默认居中 */
+  .section-title { font-size: 26px; margin-bottom: 40px; color: #333; }
+  
+  /* 限制详情区最大宽度并强制居中 */
+  .markdown-content { max-width: 900px; margin: 0 auto; text-align: center; }
+  
+  /* 穿透控制 markdown 里的图片和文字，确保长图自适应且居中 */
+  .markdown-content :global(img) { max-width: 100%; height: auto; display: block; margin: 0 auto 20px auto; border-radius: 4px; }
+  .markdown-content :global(p) { font-size: 16px; color: #444; line-height: 1.8; margin-bottom: 20px; text-align: center; }
+
+  /* 移动端适配：屏幕变小时改为上下排列 */
+  @media (max-width: 768px) {
+    .product-top-section { flex-direction: column; gap: 30px; }
+    .product-gallery { max-width: 100%; }
+  }
 </style>
