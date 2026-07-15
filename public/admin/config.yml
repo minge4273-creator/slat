@@ -8,12 +8,16 @@ public_folder: "/images"
 collections:
   - name: "products"
     label: "Slat Panels"
-    folder: "src/content/products" 
+    folder: "src/content/products"
     create: true
     slug: "{{slug}}"
     fields:
       - {label: "Product Name", name: "title", widget: "string"}
       - {label: "Material", name: "material", widget: "string"}
       - {label: "Color", name: "color", widget: "string"}
+      # 这是展现在主页的首图，也是详情页5张图里的第1张
       - {label: "Feature Image", name: "image", widget: "image"}
+      # 这是详情页剩下的4张图
+      - {label: "Gallery Images", name: "gallery", widget: "list", field: {label: "Image", name: "image", widget: "image"}, required: false}
+      # 页面下半部分的详细说明
       - {label: "Body", name: "body", widget: "markdown"}
