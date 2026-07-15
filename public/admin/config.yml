@@ -1,7 +1,11 @@
 backend:
-  name: git-gateway
+  name: github
+  # 请将下面的信息替换为你的实际 GitHub 用户名和仓库名（例如：VigorSzvigor/slat-main）
+  repo: minge4237-creator/slat
   branch: main
-  
+  # 请将下面的地址替换为你部署在 Cloudflare Worker 上的 OAuth 验证服务地址
+  base_url: https://slat-1oy.pages.dev/.workers.dev
+
 media_folder: "public/images"
 public_folder: "/images"
 
