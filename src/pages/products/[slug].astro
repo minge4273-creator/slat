@@ -66,9 +66,9 @@ const { frontmatter, compiledContent } = product;
   </div>
 </Layout>
 
-<!-- 调整 3：加入客户端 JavaScript，实现点击小图换大图的交互逻辑 -->
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
+<!-- 调整 3：加入 is:inline 确保脚本在客户端严格执行，并改进点击获取逻辑 -->
+<script is:inline>
+  window.addEventListener('DOMContentLoaded', () => {
     // 获取大图元素和所有小图元素
     const mainImage = document.getElementById('main-product-image');
     const thumbs = document.querySelectorAll('.thumb');
@@ -76,15 +76,20 @@ const { frontmatter, compiledContent } = product;
     if (mainImage && thumbs.length > 0) {
       thumbs.forEach(thumb => {
         // 给每一个小图添加点击事件
-        thumb.addEventListener('click', function() {
+        thumb.addEventListener('click', (event) => {
+          // 获取当前真正被点击的元素
+          const target = event.currentTarget;
+          
           // 1. 将大图的 src 替换为当前被点击小图的 src
-          mainImage.src = this.src;
+          if (target && target.src) {
+            mainImage.src = target.src;
+          }
 
           // 2. 移除所有小图的 "选中" 边框样式
           thumbs.forEach(t => t.classList.remove('active-thumb'));
           
           // 3. 给当前被点击的小图加上 "选中" 边框样式
-          this.classList.add('active-thumb');
+          target.classList.add('active-thumb');
         });
       });
     }
