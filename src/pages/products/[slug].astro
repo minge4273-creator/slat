@@ -1,0 +1,74 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// 告诉 Astro 获取哪些产品数据来生成页面
+export async function getStaticPaths() {
+  const products = await Astro.glob('../../content/products/*.md');
+  return products.map(product => ({
+    params: { 
+      // 获取文件名作为网址，例如 wood-panel.md 的网址就是 /products/wood-panel
+      slug: product.file.split('/').pop().split('.')[0] 
+    },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { frontmatter, compiledContent } = product;
+---
+
+<Layout title={frontmatter.title}>
+  <div class="product-detail-container">
+    
+    <!-- 上半部分：阿里国际站风格的主图与核心信息 -->
+    <div class="product-top-section">
+      
+      <!-- 左侧：5张图片展示区 -->
+      <div class="product-gallery">
+        <!-- 大图显示首图 -->
+        <img src={frontmatter.image} alt={frontmatter.title} class="main-image" />
+        
+        <!-- 下方缩略图列表 (1张首图 + 4张图集) -->
+        <div class="thumbnail-list">
+          <img src={frontmatter.image} class="thumb" />
+          {frontmatter.gallery && frontmatter.gallery.map((item) => (
+            <img src={item.image} class="thumb" />
+          ))}
+        </div>
+      </div>
+
+      <!-- 右侧：产品核心属性与询盘入口 -->
+      <div class="product-info">
+        <h1>{frontmatter.title}</h1>
+        <div class="attributes">
+          <p><strong>Material:</strong> {frontmatter.material}</p>
+          <p><strong>Color:</strong> {frontmatter.color}</p>
+        </div>
+        <!-- 引导客户前往询盘页 -->
+        <a href="/inquiry" class="inquiry-btn">Send Inquiry</a>
+      </div>
+    </div>
+
+    <!-- 下半部分：产品长图/详细图文描述 -->
+    <div class="product-body-section">
+      <h2>Product Details</h2>
+      <div class="markdown-content" set:html={compiledContent()} />
+    </div>
+    
+  </div>
+</Layout>
+
+<style>
+  /* 基础布局样式，你可以根据需要进一步美化 */
+  .product-detail-container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  .product-top-section { display: flex; gap: 40px; margin-bottom: 50px; }
+  .product-gallery { flex: 1; max-width: 500px; }
+  .main-image { width: 100%; height: auto; border: 1px solid #eee; margin-bottom: 10px; }
+  .thumbnail-list { display: flex; gap: 10px; }
+  .thumb { width: 80px; height: 80px; object-fit: cover; border: 1px solid #ccc; cursor: pointer; }
+  .product-info { flex: 1; }
+  .product-info h1 { font-size: 28px; margin-bottom: 20px; }
+  .attributes p { margin: 10px 0; font-size: 16px; }
+  .inquiry-btn { display: inline-block; margin-top: 30px; padding: 15px 30px; background-color: #ff6a00; color: white; text-decoration: none; font-weight: bold; border-radius: 4px; }
+  .product-body-section { border-top: 2px solid #eee; padding-top: 30px; }
+</style>
