@@ -1,15 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const panels = [
-  { name: "Natural Oak Slat", material: "Real Wood Veneer", color: "Light Oak" },
-  { name: "Smoked Walnut Slat", material: "Walnut Veneer", color: "Dark Brown" },
-  { name: "Classic Grey Slat", material: "MDF + PET Fiber", color: "Concrete Grey" }
-];
+// 关键修改 1：删除写死的面板数据，改为通过 Astro.glob 自动读取 CMS 里的 markdown 文件
+const products = await Astro.glob('../content/products/*.md');
 ---
 
 <Layout title="Home">
-  <!-- 1. 轮播图模块 (CSS 纯代码实现) -->
+  <!-- 1. 轮播图模块 (保持不变) -->
   <section class="slider-container">
     <div class="slider">
       <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/banner1.jpg');">
@@ -18,30 +15,49 @@ const panels = [
           <p>Elevate your interior design with our Slat Panels.</p>
         </div>
       </div>
-      <!-- 你可以按同样格式增加更多 slide -->
     </div>
   </section>
 
-  <!-- 2. 产品展示网格 -->
+  <!-- 2. 产品展示网格 (核心修改区) -->
   <section id="products" style="padding: 4rem 0;">
     <div class="container">
       <h2 style="text-align: center; margin-bottom: 3rem;">Our Collections</h2>
       <div class="product-grid">
-        {panels.map(p => (
-          <div class="product-card">
-            <div class="img-placeholder">[Product: {p.name}]</div>
-            <div style="padding: 1.5rem;">
-              <h3>{p.name}</h3>
-              <p>Color: {p.color}</p>
-              <a href={`/inquiry?product=${p.name}`} class="btn-sm">Request Quote</a>
+        {products.map((product) => {
+          // 提取文件名作为跳转链接的后缀 (slug)
+          const slug = product.file.split('/').pop().split('.')[0];
+          // p 代表你在 CMS 后台填写的那个产品的所有字段信息
+          const p = product.frontmatter;
+
+          return (
+            <div class="product-card">
+              <!-- 关键修改 2：给图片和标题套上超链接 <a>，点击即可进入 /products/产品名 -->
+              <a href={`/products/${slug}`} class="product-link">
+                <!-- 关键修改 3：读取 CMS 里的首图 (p.image) 并展示 -->
+                {p.image ? (
+                  <img src={p.image} alt={p.title} class="product-img" />
+                ) : (
+                  <div class="img-placeholder">[Image: {p.title}]</div>
+                )}
+                
+                <div style="padding: 1.5rem; padding-bottom: 0.5rem;">
+                  <h3 class="product-title">{p.title}</h3>
+                  <p style="color: #666; margin-top: 5px;">Color: {p.color}</p>
+                </div>
+              </a>
+              
+              <!-- 底部保留你原本的询盘按钮，不包裹在跳转详情页的链接内 -->
+              <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
+                <a href={`/inquiry?product=${p.title}`} class="btn-sm">Request Quote</a>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   </section>
 
-  <!-- 3. 公司信息板块 (带跳转链接) -->
+  <!-- 3. 公司信息板块 (保持不变) -->
   <section style="background: #1a1a1a; color: white; padding: 5rem 0;">
     <div class="container">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
@@ -67,16 +83,28 @@ const panels = [
   </section>
 
   <style>
+    /* 原有样式 */
     .slider-container { width: 100%; height: 500px; overflow: hidden; position: relative; background: #333; }
     .slide { width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
     .slide-content h1 { font-size: 3.5rem; margin-bottom: 10px; }
     .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-    .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; }
+    .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    
+    /* 新增：卡片悬浮时的阴影动效，让它看起来更像一个可以点击的商品 */
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+    
+    /* 新增：主页产品首图和链接的样式 */
+    .product-link { text-decoration: none; color: inherit; display: block; }
+    .product-img { width: 100%; height: 250px; object-fit: cover; display: block; border-bottom: 1px solid #f5f5f5; }
+    .product-title { font-size: 1.25rem; margin: 0; transition: color 0.2s; }
+    .product-link:hover .product-title { color: #d4a373; } /* 鼠标悬浮时标题变成品牌色 */
+    
     .img-placeholder { height: 250px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #999; }
-    .contact-links ul { list-style: none; padding: 0; }
+    .contact-links ul { list-style: none; padding: 0; margin: 0; }
     .contact-links li { margin-bottom: 15px; font-size: 1.1rem; }
     .contact-links a { color: #fff; text-decoration: none; border-bottom: 1px solid transparent; transition: 0.3s; }
     .contact-links a:hover { color: #d4a373; border-bottom-color: #d4a373; }
-    .btn-sm { background: #d4a373; color: white; padding: 8px 16px; text-decoration: none; border-radius: 4px; display: block; text-align: center; }
+    .btn-sm { background: #d4a373; color: white; padding: 10px 16px; text-decoration: none; border-radius: 4px; display: block; text-align: center; font-weight: bold; transition: background 0.3s; }
+    .btn-sm:hover { background: #c08e5c; }
   </style>
 </Layout>
