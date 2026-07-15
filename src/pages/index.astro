@@ -1,8 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-// 关键修改 1：删除写死的面板数据，改为通过 Astro.glob 自动读取 CMS 里的 markdown 文件
-const products = await Astro.glob('../content/products/*.md');
+// 使用 try...catch 避免因为没有产品文件而导致网站构建崩溃
+let products = [];
+try {
+  products = await Astro.glob('../content/products/*.md');
+} catch (err) {
+  // 当找不到文件时，会在后台打印一条警告，但网站依然会成功部署
+  console.warn('No product files found. Please add products via Decap CMS.');
+}
 ---
 
 <Layout title="Home">
