@@ -12,13 +12,30 @@ try {
 ---
 
 <Layout title="Home">
-  <!-- 1. 轮播图模块 (保持不变) -->
+  <!-- 1. 轮播图模块 (已修改为自动轮播) -->
   <section class="slider-container">
     <div class="slider">
-      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/banner1.jpg');">
+      <!-- 第 1 张图 -->
+      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/1.jpg');">
         <div class="slide-content">
           <h1>Modern Acoustic Solutions</h1>
           <p>Elevate your interior design with our Slat Panels.</p>
+        </div>
+      </div>
+
+      <!-- 第 2 张图 -->
+      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/2.jpg');">
+        <div class="slide-content">
+          <h1>Premium Wood Veneer</h1>
+          <p>Perfect for Home and Commercial Spaces.</p>
+        </div>
+      </div>
+
+      <!-- 第 3 张图 -->
+      <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/images/3.jpg');">
+        <div class="slide-content">
+          <h1>Excellent Soundproofing</h1>
+          <p>Create a quiet and elegant environment.</p>
         </div>
       </div>
     </div>
@@ -89,29 +106,53 @@ try {
   </section>
 
   <style>
-    /* 原有样式 */
+    /* --- 新增：自动轮播图 CSS --- */
     .slider-container { width: 100%; height: 500px; overflow: hidden; position: relative; background: #333; }
-    .slide { width: 100%; height: 100%; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; color: white; }
-    .slide-content h1 { font-size: 3.5rem; margin-bottom: 10px; }
-    
-    /* 修改项 1：强制网格为 4 列，并增加移动端适配保护 */
+    .slider { width: 100%; height: 100%; position: relative; }
+
+    .slide { 
+      width: 100%; height: 100%; 
+      background-size: cover; background-position: center; 
+      display: flex; align-items: center; justify-content: center; 
+      text-align: center; color: white;
+      position: absolute; top: 0; left: 0;
+      opacity: 0; /* 默认全部隐藏 */
+      animation: fadeCarousel 15s infinite; /* 3张图，每张展示5秒，总共15秒一个循环 */
+    }
+
+    /* 错开每张图片的动画开始时间 */
+    .slide:nth-child(1) { animation-delay: 0s; }
+    .slide:nth-child(2) { animation-delay: 5s; }
+    .slide:nth-child(3) { animation-delay: 10s; }
+
+    /* 关键帧：控制图片的淡入、停留和淡出 */
+    @keyframes fadeCarousel {
+      0% { opacity: 0; z-index: 1; }
+      10% { opacity: 1; z-index: 2; } /* 前1.5秒淡入 */
+      33% { opacity: 1; z-index: 2; } /* 停留显示 */
+      43% { opacity: 0; z-index: 1; } /* 淡出并让位给下一张图 */
+      100% { opacity: 0; z-index: 1; }
+    }
+
+    /* 增强文字在图片上的可读性 */
+    .slide-content h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+    .slide-content p { font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
+
+    /* --- 原有产品网格样式 --- */
     .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
     @media (max-width: 992px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 576px) { .product-grid { grid-template-columns: 1fr; } }
 
     .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease; }
     
-    /* 新增：卡片悬浮时的阴影动效，让它看起来更像一个可以点击的商品 */
+    /* 卡片悬浮时的阴影动效 */
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
     
-    /* 新增：主页产品首图和链接的样式 */
     .product-link { text-decoration: none; color: inherit; display: block; }
-    
-    /* 修改项 2：强制图片比例为 1:1 正方形 */
     .product-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-bottom: 1px solid #f5f5f5; }
     
     .product-title { font-size: 1.25rem; margin: 0; transition: color 0.2s; }
-    .product-link:hover .product-title { color: #d4a373; } /* 鼠标悬浮时标题变成品牌色 */
+    .product-link:hover .product-title { color: #d4a373; } 
     
     .img-placeholder { height: 250px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #999; }
     .contact-links ul { list-style: none; padding: 0; margin: 0; }
