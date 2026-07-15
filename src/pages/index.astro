@@ -6,22 +6,16 @@ let products = [];
 try {
   products = await Astro.glob('../content/products/*.md');
 } catch (err) {
-  // 当找不到文件时，会在后台打印一条警告，但网站依然会成功部署
   console.warn('No product files found. Please add products via Decap CMS.');
 }
 ---
 
 <Layout title="Home">
-<!-- 1. 轮播图模块 (已删掉文字，修正图片路径) -->
+  <!-- 1. 轮播图模块：修改为固定比例 -->
   <section class="slider-container">
     <div class="slider">
-      <!-- 第 1 张图 -->
       <div class="slide" style="background-image: url('/images/slide1.jpg');"></div>
-
-      <!-- 第 2 张图 -->
       <div class="slide" style="background-image: url('/images/slide2.jpg');"></div>
-
-      <!-- 第 3 张图 -->
       <div class="slide" style="background-image: url('/images/slide3.jpg');"></div>
     </div>
   </section>
@@ -32,29 +26,22 @@ try {
       <h2 style="text-align: center; margin-bottom: 3rem;">Our Collections</h2>
       <div class="product-grid">
         {products.map((product) => {
-          // 提取文件名作为跳转链接的后缀 (slug)
           const slug = product.file.split('/').pop().split('.')[0];
-          // p 代表你在 CMS 后台填写的那个产品的所有字段信息
           const p = product.frontmatter;
 
           return (
             <div class="product-card">
-              <!-- 关键修改 2：给图片和标题套上超链接 <a>，点击即可进入 /products/产品名 -->
               <a href={`/products/${slug}`} class="product-link">
-                <!-- 关键修改 3：读取 CMS 里的首图 (p.image) 并展示 -->
                 {p.image ? (
                   <img src={p.image} alt={p.title} class="product-img" />
                 ) : (
                   <div class="img-placeholder">[Image: {p.title}]</div>
                 )}
-                
                 <div style="padding: 1.5rem; padding-bottom: 0.5rem;">
                   <h3 class="product-title">{p.title}</h3>
                   <p style="color: #666; margin-top: 5px;">Color: {p.color}</p>
                 </div>
               </a>
-              
-              <!-- 底部保留你原本的询盘按钮，不包裹在跳转详情页的链接内 -->
               <div style="padding: 0 1.5rem 1.5rem 1.5rem;">
                 <a href={`/inquiry?product=${p.title}`} class="btn-sm">Request Quote</a>
               </div>
@@ -65,7 +52,7 @@ try {
     </div>
   </section>
 
-  <!-- 3. 公司信息板块 (保持不变) -->
+  <!-- 3. 公司信息板块 -->
   <section style="background: #1a1a1a; color: white; padding: 5rem 0;">
     <div class="container">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
@@ -91,54 +78,49 @@ try {
   </section>
 
   <style>
-    /* --- 新增：自动轮播图 CSS --- */
-    .slider-container { width: 100%; height: 500px; overflow: hidden; position: relative; background: #333; }
+    /* --- 轮播图尺寸适配调整 --- */
+    .slider-container { 
+      width: 100%; 
+      aspect-ratio: 3 / 1; /* 强制容器比例为 750:250，即 3:1 */
+      overflow: hidden; 
+      position: relative; 
+      background: #333; 
+    }
     .slider { width: 100%; height: 100%; position: relative; }
 
     .slide { 
       width: 100%; height: 100%; 
-      background-size: cover; background-position: center; 
-      display: flex; align-items: center; justify-content: center; 
-      text-align: center; color: white;
       position: absolute; top: 0; left: 0;
-      opacity: 0; /* 默认全部隐藏 */
-      animation: fadeCarousel 15s infinite; /* 3张图，每张展示5秒，总共15秒一个循环 */
+      /* 使用 contain 确保 750x250 的图片完整显示在 3:1 的容器内，不被裁切 */
+      background-size: contain; 
+      background-position: center; 
+      background-repeat: no-repeat;
+      opacity: 0; 
+      animation: fadeCarousel 15s infinite; 
     }
 
-    /* 错开每张图片的动画开始时间 */
     .slide:nth-child(1) { animation-delay: 0s; }
     .slide:nth-child(2) { animation-delay: 5s; }
     .slide:nth-child(3) { animation-delay: 10s; }
 
-    /* 关键帧：控制图片的淡入、停留和淡出 */
     @keyframes fadeCarousel {
       0% { opacity: 0; z-index: 1; }
-      10% { opacity: 1; z-index: 2; } /* 前1.5秒淡入 */
-      33% { opacity: 1; z-index: 2; } /* 停留显示 */
-      43% { opacity: 0; z-index: 1; } /* 淡出并让位给下一张图 */
+      10% { opacity: 1; z-index: 2; }
+      33% { opacity: 1; z-index: 2; }
+      43% { opacity: 0; z-index: 1; }
       100% { opacity: 0; z-index: 1; }
     }
 
-    /* 增强文字在图片上的可读性 */
-    .slide-content h1 { font-size: 3.5rem; margin-bottom: 10px; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-    .slide-content p { font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.5); }
-
-    /* --- 原有产品网格样式 --- */
+    /* --- 产品网格样式 --- */
     .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
     @media (max-width: 992px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 576px) { .product-grid { grid-template-columns: 1fr; } }
-
     .product-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    
-    /* 卡片悬浮时的阴影动效 */
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-    
     .product-link { text-decoration: none; color: inherit; display: block; }
     .product-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-bottom: 1px solid #f5f5f5; }
-    
     .product-title { font-size: 1.25rem; margin: 0; transition: color 0.2s; }
-    .product-link:hover .product-title { color: #d4a373; } 
-    
+    .product-link:hover .product-title { color: #d4a373; }
     .img-placeholder { height: 250px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; color: #999; }
     .contact-links ul { list-style: none; padding: 0; margin: 0; }
     .contact-links li { margin-bottom: 15px; font-size: 1.1rem; }
