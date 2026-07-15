@@ -23,6 +23,9 @@ const { frontmatter, compiledContent } = product;
 <Layout title={frontmatter.title}>
   <div class="product-detail-container">
     
+    <!-- 新增：返回主页的按钮 -->
+    <a href="/#products" class="back-btn">← Back to Home</a>
+    
     <!-- 调整 1：将产品标题放在最上方 -->
     <h1 class="product-main-title">{frontmatter.title}</h1>
 
@@ -100,8 +103,12 @@ const { frontmatter, compiledContent } = product;
   /* 基础容器 */
   .product-detail-container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
 
+  /* --- 新增：返回按钮样式 --- */
+  .back-btn { display: inline-block; margin-bottom: 20px; font-size: 16px; color: #666; text-decoration: none; transition: all 0.2s ease; }
+  .back-btn:hover { color: #ff6a00; transform: translateX(-3px); /* 悬浮时带一点点向左移动的动效 */ }
+
   /* 标题样式 */
-  .product-main-title { font-size: 32px; margin-bottom: 30px; color: #222; line-height: 1.4; }
+  .product-main-title { font-size: 32px; margin-bottom: 30px; color: #222; line-height: 1.4; margin-top: 0; }
 
   /* 左右分栏布局 */
   .product-top-section { display: flex; gap: 50px; margin-bottom: 60px; align-items: flex-start; }
