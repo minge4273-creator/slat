@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: minge4273-creator/slat
   branch: main
   
 media_folder: "public/images"
