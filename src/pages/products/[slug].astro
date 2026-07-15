@@ -2,15 +2,21 @@
 import Layout from '../../layouts/Layout.astro';
 
 // 告诉 Astro 获取哪些产品数据来生成页面
+// 替换后的新代码
 export async function getStaticPaths() {
-  const products = await Astro.glob('../../content/products/*.md');
-  return products.map(product => ({
-    params: { 
-      // 获取文件名作为网址，例如 wood-panel.md 的网址就是 /products/wood-panel
-      slug: product.file.split('/').pop().split('.')[0] 
-    },
-    props: { product },
-  }));
+  try {
+    const products = await Astro.glob('../../content/products/*.md');
+    return products.map(product => ({
+      params: { 
+        slug: product.file.split('/').pop().split('.')[0] 
+      },
+      props: { product },
+    }));
+  } catch (error) {
+    // 如果找不到任何产品文件，就返回一个空数组，防止网站构建崩溃
+    console.warn('No product files found for dynamic routes. Skipping generation.');
+    return []; 
+  }
 }
 
 const { product } = Astro.props;
