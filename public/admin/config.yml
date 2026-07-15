@@ -21,3 +21,4 @@ collections:
       - {label: "Gallery Images", name: "gallery", widget: "list", field: {label: "Image", name: "image", widget: "image"}, required: false}
       # 页面下半部分的详细说明
       - {label: "Body", name: "body", widget: "markdown"}
+
