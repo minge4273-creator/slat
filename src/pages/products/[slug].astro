@@ -34,14 +34,16 @@ const { frontmatter, compiledContent } = product;
         <!-- 大图显示首图 -->
         <img src={frontmatter.image} alt={frontmatter.title} class="main-image" />
         
-        <!-- 下方缩略图列表 (1张首图 + 4张图集) -->
+       <!-- 下方缩略图列表 (1张首图 + 4张图集) -->
         <div class="thumbnail-list">
+          <!-- 渲染第 1 张图（首图） -->
           <img src={frontmatter.image} class="thumb" />
+          
+          <!-- 渲染剩下的 4 张图，加入格式判断解决图片发白/裂开问题 -->
           {frontmatter.gallery && frontmatter.gallery.map((item) => (
-            <img src={item.image} class="thumb" />
+            <img src={typeof item === 'string' ? item : item?.image} class="thumb" />
           ))}
         </div>
-      </div>
 
       <!-- 右侧：产品核心属性与询盘入口 -->
       <div class="product-info">
